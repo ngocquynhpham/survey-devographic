@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo contenteditable vs plaintext-only</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+    background: #f5f5f5;
+  }
+
+  .editor-container {
+    width: 45%;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  .editor {
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    min-height: 150px;
+    padding: 10px;
+    background: #fff;
+    outline: none;
+    overflow-y: auto;
+  }
+
+  .plaintext {
+    border-color: #2196F3;
+  }
+
+  p {
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="editor-container">
+  <h2>Rich Text (contenteditable)</h2>
+  <div contenteditable="true" class="editor" id="richEditor">
+    Paste từ Word/Google Docs vào đây sẽ giữ formatting.
+  </div>
+</div>
+
+<div class="editor-container">
+  <h2>Plaintext-only</h2>
+  <div contenteditable="true" class="editor plaintext" id="plainEditor">
+    Paste từ Word/Google Docs vào đây sẽ chỉ giữ text thuần.
+  </div>
+</div>
+
+<script>
+const plainEditor = document.getElementById('plainEditor');
+
+// Bắt sự kiện paste để giữ plain text
+plainEditor.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+});
+
+// Optionally: prevent HTML insertion on input
+plainEditor.addEventListener('input', () => {
+  plainEditor.textContent = plainEditor.textContent;
+});
+</script>
+
+</body>
+</html>

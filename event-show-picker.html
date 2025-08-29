@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo select + ::picker</title>
+<style>
+  /* Reset giao diện mặc định của select */
+  select,
+  ::picker(select) {
+    appearance: base-select;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+  }
+
+  select:focus {
+    border-color: #2196F3;
+    box-shadow: 0 0 5px rgba(33,150,243,0.5);
+  }
+
+  /* Custom arrow */
+  .select-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .select-wrapper::after {
+    content: "▼";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #555;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="select-wrapper">
+  <select>
+    <option value="">Chọn màu</option>
+    <option value="red">Đỏ</option>
+    <option value="blue">Xanh dương</option>
+    <option value="green">Xanh lá</option>
+    <option value="yellow">Vàng</option>
+  </select>
+</div>
+
+</body>
+</html>

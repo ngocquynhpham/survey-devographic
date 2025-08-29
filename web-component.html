@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Home Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    dashboard {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Smart Home Dashboard</h1>
+  <dashboard>
+    <smart-light name="Living Room"></smart-light>
+    <smart-light name="Kitchen"></smart-light>
+    <temperature-sensor room="Bedroom"></temperature-sensor>
+    <temperature-sensor room="Living Room"></temperature-sensor>
+  </dashboard>
+
+  <script>
+    /* ========== SMART LIGHT COMPONENT ========== */
+    class SmartLight extends HTMLElement {
+      constructor() {
+        super();
+        this.on = false;
+        const shadow = this.attachShadow({ mode: 'open' });
+        shadow.innerHTML = `
+          <style>
+            .card {
+              width: 150px;
+              padding: 10px;
+              border-radius: 10px;
+              background: #fff;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              cursor: pointer;
+              transition: background 0.3s;
+            }
+            .card.on { background: #e0ffe0; }
+            .name { font-weight: bold; margin-bottom: 10px; }
+            .status { color: green; font-weight: bold; }
+            .status.off { color: red; }
+          </style>
+          <div class="card">
+            <div class="name">${this.getAttribute('name') || 'Light'}</div>
+            <div class="status off">OFF</div>
+          </div>
+        `;
+        this.card = shadow.querySelector('.card');
+        this.status = shadow.querySelector('.status');
+      }
+
+      connectedCallback() {
+        this.card.addEventListener('click', () => this.toggle());
+      }
+
+      toggle() {
+        this.on = !this.on;
+        if(this.on){
+          this.card.classList.add('on');
+          this.status.textContent = 'ON';
+          this.status.classList.remove('off');
+        } else {
+          this.card.classList.remove('on');
+          this.status.textContent = 'OFF';
+          this.status.classList.add('off');
+        }
+      }
+    }
+    customElements.define('smart-light', SmartLight);
+
+    /* ========== TEMPERATURE SENSOR COMPONENT ========== */
+    class TemperatureSensor extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
+        shadow.innerHTML = `
+          <style>
+            .card {
+              width: 150px;
+              padding: 10px;
+              border-radius: 10px;
+              background: #fff;
+              box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            }
+            .room { font-weight: bold; margin-bottom: 10px; }
+            .temp { font-size: 1.5em; }
+          </style>
+          <div class="card">
+            <div class="room">${this.getAttribute('room') || 'Room'}</div>
+            <div class="temp">-- °C</div>
+          </div>
+        `;
+        this.tempElem = shadow.querySelector('.temp');
+      }
+
+      connectedCallback() {
+        // Demo: update temp every 1s với số giả lập
+        this.interval = setInterval(() => {
+          const temp = (20 + Math.random() * 5).toFixed(1);
+          this.tempElem.textContent = `${temp} °C`;
+        }, 1000);
+      }
+
+      disconnectedCallback() {
+        clearInterval(this.interval);
+      }
+    }
+    customElements.define('temperature-sensor', TemperatureSensor);
+  </script>
+</body>
+</html>
